@@ -11,7 +11,11 @@ You need to upgrade pip, using pip. In my experience, old versions of pip may fa
 ```
 python -m pip install --upgrade pip
 ```
-## Configure access to Elgato devices
+## Install KStatusNotifierItem/AppIndicator Support extension
+
+For the system tray icon to show up, you will need to install the [KStatusNotifierItem/AppIndicator Support](https://extensions.gnome.org/extension/615/appindicator-support/) extension.
+
+See [troubleshooting](../troubleshooting.md) for additional information.
 The following will create a file called `/etc/udev/rules.d/70-streamdeck.rules` and add the following text to it: `SUBSYSTEM=="usb", ATTRS{idVendor}=="0fd9", TAG+="uaccess"`. Creating this file adds a udev rule that provides your user with access to USB devices created by Elgato.
 ``` bash
 sudo sh -c 'echo "SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", TAG+=\"uaccess\"" > /etc/udev/rules.d/70-streamdeck.rules'
