@@ -2,7 +2,7 @@
 
 > Note you may need to use `python`, `python3` or `python3.8` in the commands shown below, depending on your distribution. The examples simply use `python` for simplicity's sake.
 
-## Basics
+## Basics Troubleshooting Steps
 There are **four** important things you need to get a working system.
 
 1. You need a working Python 3.8 or higher with pip installed.
