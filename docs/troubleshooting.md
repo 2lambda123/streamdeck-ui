@@ -19,9 +19,11 @@ If you get an error such as:
 ```
 ImportError: cannot import name 'QtWidgets' from 'PySide6'
 ```
-This usually means a problem with PySide6. Try resolving with this:
+If you get an error such as:
+``` console
 ``` console
 python -m pip install --force-reinstall --no-cache-dir pyside6
+```
 ```
 
 ## No System Tray Indicator
@@ -31,6 +33,7 @@ qt.core.qobject.connect: QObject::connect: No such signal QPlatformNativeInterfa
 ```
 
 This is because gnome does not provide a System Tray out the box and you will need an extension
+ [KStatusNotifierItem/AppIndicator Support](https://extensions.gnome.org/extension/615/appindicator-support/) to make the system tray icon show up.
  [KStatusNotifierItem/AppIndicator Support](https://extensions.gnome.org/extension/615/appindicator-support/) to make the system tray icon show up.
 
 ## Could not load the Qt platform plugin "xcb"
