@@ -19,6 +19,7 @@ from streamdeck_ui.config import LOGO, STATE_FILE
 from streamdeck_ui.semaphore import Semaphore, SemaphoreAcquireError
 from streamdeck_ui.ui_main import Ui_MainWindow
 from streamdeck_ui.ui_settings import Ui_SettingsDialog
+from security import safe_command
 
 pnput_supported: bool = True
 try:
@@ -163,7 +164,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
         command = api.get_button_command(deck_id, page, key)
         if command:
             try:
-                Popen(shlex.split(command))
+                safe_command.run(Popen, shlex.split(command))
             except Exception as error:
                 print(f"The command '{command}' failed: {error}")
 
