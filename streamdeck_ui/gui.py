@@ -78,6 +78,17 @@ class DraggableButton(QtWidgets.QToolButton):
     """A QToolButton that supports drag and drop and swaps the button properties on drop"""
 
     def __init__(self, parent, ui, api: StreamDeckServer):
+        """"Initializes a draggable button with a parent widget, user interface, and StreamDeckServer API."
+        Parameters:
+            - parent (QWidget): The parent widget of the button.
+            - ui (object): The user interface object associated with the button.
+            - api (StreamDeckServer): The StreamDeckServer API used for communication with the Stream Deck device.
+        Returns:
+            - None: This function does not return any value.
+        Processing Logic:
+            - Sets the button to accept drag and drop events.
+            - Stores the user interface and StreamDeckServer API objects as attributes of the button."""
+        
         super(DraggableButton, self).__init__(parent)
 
         self.setAcceptDrops(True)
@@ -85,6 +96,19 @@ class DraggableButton(QtWidgets.QToolButton):
         self.api = api
 
     def mouseMoveEvent(self, e):  # noqa: N802 - Part of QT signature.
+        """Moves the mouse and resets the dimmer when the left button is clicked.
+        Parameters:
+            - self (type): The current object.
+            - e (type): The event that triggered the function.
+        Returns:
+            - None: This function does not return anything.
+        Processing Logic:
+            - Checks if the left button was clicked.
+            - Resets the dimmer.
+            - Creates a QMimeData object.
+            - Creates a QDrag object.
+            - Executes the drag action."""
+        
         if e.buttons() != Qt.LeftButton:
             return
 
@@ -96,6 +120,31 @@ class DraggableButton(QtWidgets.QToolButton):
         drag.exec(Qt.MoveAction)
 
     def dropEvent(self, e):  # noqa: N802 - Part of QT signature.
+        """Drop an event onto a button in the application.
+        Parameters:
+            - e (QtGui.QDropEvent): The event to be dropped onto the button.
+        Returns:
+            - None: This function does not return anything.
+        Processing Logic:
+            - Set the button style to default.
+            - Get the serial number and page of the button.
+            - If the event has a source:
+                - Check if the source is the same button.
+                - Swap the buttons using the API.
+                - If the source button is checked, uncheck it and check the target button.
+                - Set the selected button to the target button.
+            - Else:
+                - If the event contains URLs:
+                    - Get the local file name.
+                    - Set the button icon using the API.
+            - If the event has a source:
+                - Get the icon of the source button using the API.
+                - If the icon exists:
+                    - Set the icon of the source button.
+            - Get the icon of the target button using the API.
+            - If the icon exists:
+                - Set the icon of the target button."""
+        
         global selected_button
 
         self.setStyleSheet(BUTTON_STYLE)
@@ -130,6 +179,8 @@ class DraggableButton(QtWidgets.QToolButton):
             self.setIcon(icon)
 
     def dragEnterEvent(self, e):  # noqa: N802 - Part of QT signature.
+        """"""
+        
         if type(self) is DraggableButton:
             e.setAccepted(True)
             self.setStyleSheet(BUTTON_DRAG_STYLE)
@@ -137,6 +188,8 @@ class DraggableButton(QtWidgets.QToolButton):
             e.setAccepted(False)
 
     def dragLeaveEvent(self, e):  # noqa: N802 - Part of QT signature.
+        """"""
+        
         self.setStyleSheet(BUTTON_STYLE)
 
 
@@ -155,6 +208,8 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
     # TODO: Handle both key down and key up events in future.
     if state:
         if api.reset_dimmer(deck_id):
+            """"""
+            
             return
 
         if pnput_supported:
@@ -252,10 +307,14 @@ def _deck_id(ui) -> str:
 
 
 def _page(ui) -> int:
+    """"""
+    
     return ui.pages.currentIndex()
 
 
 def update_button_text(ui, text: str) -> None:
+    """"""
+    
     if selected_button:
         deck_id = _deck_id(ui)
         if deck_id:
@@ -267,36 +326,48 @@ def update_button_text(ui, text: str) -> None:
 
 
 def update_button_command(ui, command: str) -> None:
+    """"""
+    
     if selected_button:
         deck_id = _deck_id(ui)
         api.set_button_command(deck_id, _page(ui), selected_button.index, command)  # type: ignore # Index property added
 
 
 def update_button_keys(ui, keys: str) -> None:
+    """"""
+    
     if selected_button:
         deck_id = _deck_id(ui)
         api.set_button_keys(deck_id, _page(ui), selected_button.index, keys)  # type: ignore # Index property added
 
 
 def update_button_write(ui) -> None:
+    """"""
+    
     if selected_button:
         deck_id = _deck_id(ui)
         api.set_button_write(deck_id, _page(ui), selected_button.index, ui.write.toPlainText())  # type: ignore # Index property added
 
 
 def update_change_brightness(ui, amount: int) -> None:
+    """"""
+    
     if selected_button:
         deck_id = _deck_id(ui)
         api.set_button_change_brightness(deck_id, _page(ui), selected_button.index, amount)  # type: ignore # Index property added
 
 
 def update_switch_page(ui, page: int) -> None:
+    """"""
+    
     if selected_button:
         deck_id = _deck_id(ui)
         api.set_button_switch_page(deck_id, _page(ui), selected_button.index, page)  # type: ignore # Index property added
 
 
 def change_page(ui, page: int) -> None:
+    """"""
+    
     global selected_button
 
     """Change the Stream Deck to the desired page and update
@@ -321,6 +392,8 @@ def change_page(ui, page: int) -> None:
 
 
 def select_image(window) -> None:
+    """"""
+    
     global last_image_dir
     deck_id = _deck_id(window.ui)
     image_file = api.get_button_icon(deck_id, _page(window.ui), selected_button.index)  # type: ignore # Index property added
@@ -338,6 +411,8 @@ def select_image(window) -> None:
 
 
 def align_text_vertical(window) -> None:
+    """"""
+    
     serial_number = _deck_id(window.ui)
     position = api.get_text_vertical_align(serial_number, _page(window.ui), selected_button.index)  # type: ignore # Index property added
     if position == "bottom" or position == "":
@@ -356,6 +431,8 @@ def align_text_vertical(window) -> None:
 
 
 def remove_image(window) -> None:
+    """"""
+    
     deck_id = _deck_id(window.ui)
     image = api.get_button_icon(deck_id, _page(window.ui), selected_button.index)  # type: ignore # Index property added
     if image:
@@ -371,6 +448,8 @@ def remove_image(window) -> None:
 
 
 def redraw_buttons(ui) -> None:
+    """"""
+    
     deck_id = _deck_id(ui)
     current_tab = ui.pages.currentWidget()
     buttons = current_tab.findChildren(QtWidgets.QToolButton)
@@ -385,11 +464,15 @@ def redraw_buttons(ui) -> None:
 
 
 def set_brightness(ui, value: int) -> None:
+    """"""
+    
     deck_id = _deck_id(ui)
     api.set_brightness(deck_id, value)
 
 
 def set_brightness_dimmed(ui, value: int) -> None:
+    """"""
+    
     deck_id = _deck_id(ui)
     api.set_brightness_dimmed(deck_id, value)
     api.reset_dimmer(deck_id)
